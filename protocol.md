@@ -1,0 +1,161 @@
+# JLab
+clean room reverse engineering through android btsnoop dump
+
+```
+rfcomm uuid: 00001101-0000-1000-8000-00805f9b34fb
+```
+
+- `<` phone -> earbuds
+- `>` earbuds -> phone
+
+```
+# init (unknown)
+< FE DC BA C0 C1 00 05 47 FF FF FF FF EF
+>
+  FE DC BA
+  00 type
+  C1 cmd
+  00 3E len
+  00
+  47 trans
+  19  02  01 01 00 02 01 00 01 04 00 02 04 00 01 02 00 02 02 00 01 03 00 02 03 00
+  11  01  4A 4C 61 62 20 47 4F 20 50 6F 64 73 20 41 4E 43 ("JLab GO Pods ANC")
+  02  05  01
+  04  00  64 64 64
+  07  06  05 D6 00 22 00 29
+  EF
+
+# init (unknown)
+< FE DC BA C0 03 00 06 A3 FF FF FF FF 00 EF
+> FE DC BA 00 FF 00 05 00 50 02 04 02 EF
+>
+  FE DC BA magic
+  00 type
+  03 00 cmd
+  7C
+  00 A3
+  02 00 20
+  05 01 00 00 00 01
+  09 02 EA 60 A0 B8 7F 17 8E 01
+  07 04 00 00 00 00 00 00
+  03 05 00 24
+  02 06 0A
+  03 07 1B 34
+  04 08 01 00 01
+  04 09 00 00 00
+  05 0A 00 22 00 29
+  11 0B 68 45 39 79 66 73 65 58 36 55 64 4B 37 72 46 68 ("hE9yfseX6UdK7rFh")
+  15 0C 6A 6C 5F 73 64 6B 5F 61 63 36 39 37 5F 70 75 62 6C 69 73 68 ("jl_sdk_ac697_publish")
+  05 0D 01 10 02 1C
+  08 11 00 EA 60 A0 81 34 7A
+  02 12 00
+  03 13 02 00
+  05 15 00 00 00 00
+  EF
+
+# init (unknown)
+< FE DC BA C0 07 00 06 4A FF 00 00 10 10 EF
+> FE DC BA 00 07 00 74 00 4A FF 63 0C 0A 00 1F 00 3E 00 7D 00 FA 01 F4 03 E8 07 D0 0F A0 1F 40 3E 80
+00  01 01 00 FE FD FC FC FE FF FE
+01  FF 00 FF FE FE FE FE FF FF FE
+02  03 03 02 00 FE FD FD FC FD FF
+03  00 08 08 04 00 00 00 00 02 02
+04  00 00 00 04 04 04 00 02 03 04
+05  FE 00 00 02 02 00 00 00 04 04
+06  00 00 00 00 00 FA 00 00 FA 00
+0C  04 00 01 01 00 FE FD FC FC FE
+FF FE EF
+
+# 'be aware'
+< FE DC BA C0 08 00 0D 51 FF 0A 0D 02 40 00 40 00 40 00 40 00 EF
+> FE DC BA 80 09 00 0D 04 FF 0A 0D 02 40 00 40 00 40 00 40 00 EF
+> FE DC BA 00 08 00 02 00 51 EF
+> FE DC BA 80 09 00 0D 05 FF 0A 0D 02 40 00 40 00 40 00 40 00 EF
+
+# 'noise cancelling off'
+< FE DC BA C0 08 00 0D 52 FF 0A 0D 00 00 00 00 00 00 00 00 00 EF
+> FE DC BA 80 09 00 0D 06 FF 0A 0D 00 00 00 00 00 00 00 00 00 EF
+> FE DC BA 00 08 00 02 00 52 EF
+> FE DC BA 80 09 00 0D 07 FF 0A 0D 00 00 00 00 00 00 00 00 00 EF
+
+
+# noise cancelling on
+< FE DC BA C0 08 00 0D 60 FF 0A 0D 01 40 00 40 00 40 00 40 00 EF
+
+# 0%
+< (FE DC BA) (C0) (08 00) (0D) (61) (FF 0A) (0D) (01) (40 00 40 00 00 00 00 00) EF
+# 100%
+< FE DC BA C0 08 00 0D 62 FF 0A 0D 01 40 00 40 00 40 00 40 00 EF
+# 60%
+< FE DC BA C0 08 00 0D 63 FF 0A 0D 01 40 00 40 00 21 F0 21 F0 EF
+
+# EQ2
+< FE DC BA C0 08 00 0F 65 FF 0C 04 01 FF 00 FF FE FE FE FE FF FF FE EF
+Simplified:
+  0C  04  01  FF 00 FF FE FE FE FE FF FF FE
+# EQ3
+< 0C  04  02  03 03 02 00 FE FD FD FC FD FF
+# EQ1
+< 0C  04  00  01 01 00 FE FD FC FC FE FF FE
+# custom
+< 0C  04  06  00 00 00 00 00 FA 00 00 FA 00
+# 1k -> max
+< 0C  04  06  00 00 00 00 00 05 00 00 FA 00
+# 8k -> max
+< 0C  04  06  00 00 00 00 00 05 00 00 05 00
+# 125 -> 0
+< 0C  04  06  00 00 F8 00 00 05 00 00 05 00
+# 250 -> 0
+< 0C  04  06  00 00 F8 F8 00 05 00 00 05 00
+# 500 -> 0
+< 0C  04  06  00 00 F8 F8 F8 05 00 00 05 00
+# 31 -> max
+< 0C  04  06  05 00 F8 F8 F8 05 00 00 05 00
+# 31 -> 0
+< 0C  04  06  F8 00 F8 F8 F8 05 00 00 05 00
+# 16k -> max
+< 0C  04  06  F8 00 F8 F8 F8 05 00 00 05 05
+# 16k -> 0
+< 0C  04  06  F8 00 F8 F8 F8 05 00 00 05 F8
+
+# movie move
+< FE DC BA
+  C0
+  C0
+  00 04
+    7E
+    02
+      05
+      02
+  EF
+# music mode
+< FE DC BA C0 C0 00 04 7F 02 05 01 EF
+
+# Turn off touch controls
+< FE DC BA C0 FF 00 04 73 02 05 00 EF
+> FE DC BA 00 FF 00 05 00 73 02 05 00 EF
+# Turn on touch controls
+< FE DC BA C0 FF 00 04 74 02 05 01 EF
+> FE DC BA 00 FF 00 05 00 74 02 05 01 EF
+
+# Left One tap -> Play/Pause
+< FE DC BA
+  C0 packet type
+  C0 cmd
+  00 06 len
+    75 trans
+    04
+      02 01 01 05
+      EF
+> FE DC BA 00 C0 00 03 00 75 00 EF
+# Right one tap -> play/pause
+< FE DC BA C0 C0 00 06 76 04 02 02 01 05 EF
+
+# Safe hearing 95db
+< FE DC BA C0 FF 00 04 81 02 03 01 EF
+# Safe hearing 85db
+< FE DC BA C0 FF 00 04 82 02 03 00 EF
+# Safe hearing default
+< FE DC BA C0 FF 00 04 83 02 03 02 EF
+
+```
