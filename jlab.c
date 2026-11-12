@@ -302,6 +302,6 @@ int get_module(struct PakModule *mod) {
 	mod->on_run_test = on_run_test;
 	mod->on_disconnect = on_disconnect;
 	mod->on_switch_screen = on_switch_screen;
-	mod->on_setting_changed = on_prop_changed;
+	mod->on_widget_updated = on_prop_changed;
 	return 0;
 }
